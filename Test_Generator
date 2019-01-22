@@ -1,0 +1,64 @@
+import random
+
+
+class Jakas_Klasa_Dwa:
+    def __init__(self):
+        self.zmienna_dwa = 100 # Chwilowo niepotrzebne
+        self.suma = 0 # Pozniej ewentualnie bedzie potrzebna do sumowania czasu z generatora
+
+    def dziel_dwa(self, dzielnik, wartosc):
+        self.zmienna_dwa /= dzielnik
+        print("Drugi dzielnik: ", self.zmienna_dwa, "Druga wartosc to: ", wartosc)
+        return self.petla()
+
+    def petla(self):
+
+        sztywne_wartosci = {1: 12, 2: 13,
+                            3: 14}
+
+        while True:
+            dzielnik = int(input("Wpisz wartosc: "))
+
+            if self.zmienna_dwa == 1:
+                print("Koniec")
+                break
+            elif dzielnik == 11:
+                print("Wybrano 11 szt. Rulonow\n")
+                return self.Na_Dziewiec()
+            elif self.zmienna_dwa >= dzielnik:  # Tu moze byc dowolna nazwa bo i tak zamieni sie na dzielnik
+                # Wiec mozemy dac nawet tak: elif self.zmienna >= twoj_input:
+                wartosc = sztywne_wartosci.get(dzielnik)  # Jak wpiszemy 2 to powinno zwrocic 13
+                return self.dziel_dwa(dzielnik, wartosc)
+            else:
+                print("Jakiś błąd")
+
+    def Na_Dziewiec(self):
+        print("Startuje funkcja dziewiec")
+        wybor = [50] * 6 + [60] * 3
+
+
+        while True:
+            wo = int(input("Sztuki na WO: "))
+
+            if wo == 2:
+
+                    wybrane = sum(random.sample(wybor, 2))
+
+                    print("Wybrane w wybrane: ", wybrane)
+
+
+
+                    if wybrane == 100:
+                        print("Sa 2 szt. na czas 1.40")
+                        self.suma += wybrane
+                        print("Suma wynosi: ",self.suma)
+                    elif wybrane == 110:
+                        print("Sa 2 szt. na czas 1.50")
+                    elif wybrane == 120:
+                        print("Sa 2 szt. na czas 2:00")
+                    else:
+                        print("Jakis blad!")
+
+
+csv = Jakas_Klasa_Dwa()
+csv.petla()
