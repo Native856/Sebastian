@@ -1,0 +1,37 @@
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
+from shop.models import Product
+from .cart import Cart
+from .forms import CartAddProductForm
+
+
+#Metoda post zmieni dane po stronie serwera.
+@require_POST
+def cart_add(request, product_id):
+    cart = Cart(request) # pobiera caly cart.py / init / add / save / remove / iter / len / get_total_price / clear /
+    product = get_object_or_404(Product, id=product_id) # Pobiera product, i product_id. Albo ZZZ product ID
+    form = CartAddProductForm(request.POST) # pobiera z forms.py klase
+    if form.is_valid(): # is_valid sprawdza poprawnosc danych w formularzu i zwraca True . A False gdzie mozna sprawdzic w form.errors
+        cd = form.cleaned_data # Ten atrybut jest slownikiem zawierajacym pole formularza i ich wartosci.
+        # Jezeli weryfikacja zakonczy sie zle to cleaned data bedzie zawieral tylko te dobre informacje.
+        # cd["update"] to wartość pola update Z formularza
+        cart.add(product=product,
+                 quantity=cd['quantity'],# ilosc w formularzu. Moze pobira z self. Z cd pobiera formularz i przechowuje w nim dane nawet po powrocie na glowna
+                 update_quantity=cd['update']) # pobiera z forms boolean
+        return redirect('cart:cart_detail')
+    # product / quantity / update_quantity zostaly globalnie ustawione w add
+
+def cart_remove(request, product_id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    cart.remove(product) # pobiera funkcje remove z cart.py
+    return redirect('cart:cart_detail')
+
+def cart_detail(request):
+    cart = Cart(request)
+    for item in cart:
+        item['update_quantity_form'] = CartAddProductForm(
+            initial={'quantity': item['quantity'],
+                     'update': True}
+        )
+    return render(request, 'cart/detail.html', {'cart': cart})
